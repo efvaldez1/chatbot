@@ -14,7 +14,7 @@ app = Flask(__name__)
 # This needs to be filled with the Page Access Token that will be provided
 # by the Facebook App that will be created.
 #open weathermap API key
-OWMKEY='ff66a55cf163cad6cf0db8c7f3d93352'
+OWMKEY='edd197717da7951b85f8f6936fc27b13'
 
 VERIFY_TOKEN='abcd123'
 PAT ="EAACkXOgsTTEBAFdnUYxUurh8nCoCgWvNJ1jy2XNFM5M9DMG8P582KYAWCpztupmQGRXGZCp3yZBR13PnCoiaRO73JunN4waCNmr84Inl0LgsFZC3wCkLAY1Phh0RkDa6Eb5YVMggW309GKRQjGMuJTAiQIXLq3cyVUZCnxbxtQZDZD"
