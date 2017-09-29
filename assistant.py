@@ -29,7 +29,7 @@ def handle_verification():
 @app.route('/', methods=['POST'])
 def handle_messages():
   print ("Handling Messages broski")
-  payload = request.get_data()
+  payload = str(request.get_data() + ("123")
   print (payload)
   for sender, message in messaging_events(payload):
   	print ("Incoming from %s: %s" % (sender, message))
