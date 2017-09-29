@@ -5,125 +5,62 @@ import apiai
 import pyowm
 
 
-OWM_TOKEN ="ff66a55cf163cad6cf0db8c7f3d93352"
-
-VERIFY_TOKEN='abcd123'
-#FB
-#PAGE_ACCESS_TOKEN = 'EAALjV1sGsOMBAOZAW1aiZAgfTakNKVURIA89qBpdnsmWOHL7cHwpUGUtfO78CBexJbnHJWjKaRVIPZBh2TAYxRhaLHkWZBDYT4EESWDiWf0ZAgbOnMRBxqS9Sa0o2F8ZBGJPevmQnWLURKvLQjr44ZAzWTT86fgim4FB8omAubiqQZDZD'
-#PAGE_ACCESS_TOKEN='EAADYWMVfOd4BAAgUir9ZAxgUCdYnU2F7ehVZAu49pDjVdJZCD1KA8EgZBY4K3p4kXvBsmYVZCxOiG0lFxmf885iOVBtPnVtCxOLanZA5fmOYt3B3F3IpMz2rZBBZBMwQEMu6AJqEjOwPt3rwhrk6V7ZBvB0AvAZCJwtc3WSzGd1JRLqAZDZD'
-PAGE_ACCESS_TOKEN=	'EAACeI3qD5mABABFyxAqwhxig7QZAB57rEFg0ZBxfy01jsR2g99cZCAWbF8ZAhnXQ0Jz5KkmlnPo8AqGSxdgwPZCWDgKLw7wU6XcPhvCNxgAiz69nKvU3ZAQ5aM2KHWb2Bq35RidHO72ZBPFbp2eMxZB4f2nec7ZCgQZC9ZAEZA5b7ymE6AZDZD'
-CLIENT_ACCESS_TOKEN = '70290e7963e543d392a19b33c4e8a90f'
-own = pyowm.OWM(OWM_TOKEN)
-
-ai = apiai.ApiAI(CLIENT_ACCESS_TOKEN)
+from flask import Flask, request
+import json
+import requests
 
 app = Flask(__name__)
-@app.route('/',methods=['GET'])
-def handle_veriication():
-	'''
-			Verifies facebook webhook subscription
-			Successful when verify_token is same as token sent by FB App
-	'''
 
-	if (request.args.get('hub.verify_token', '') == 'abcd123'):
-		print("succefully verified")
-		return request.args.get('hub.challenge', '')
-	else:
-		print("Wrong verification token!")
-		return "Wrong validation token"
+# This needs to be filled with the Page Access Token that will be provided
+# by the Facebook App that will be created.
+PAT = ''
+
+@app.route('/', methods=['GET'])
+def handle_verification():
+  print "Handling Verification."
+  if request.args.get('hub.verify_token', '') == 'abcd123':
+	print "Verification successful!"
+	return request.args.get('hub.challenge', '')
+  else:
+	print "Verification failed!"
+	return 'Error, wrong validation token'
 
 @app.route('/', methods=['POST'])
-def handle_message():
-	'''
-	Handle messages sent by facebook messenger to the applicaiton
-	'''
-	data = request.get_json()
+def handle_messages():
+  print "Handling Messages"
+  payload = request.get_data()
+  print payload
+  for sender, message in messaging_events(payload):
+	print "Incoming from %s: %s" % (sender, message)
+	send_message(PAT, sender, message)
+  return "ok"
 
-	if data["object"] == "page":
-		for entry in data["entry"]:
-			for messaging_event in entry["messaging"]:
-				if messaging_event.get("message"):  
-
-					sender_id = messaging_event["sender"]["id"]        
-					recipient_id = messaging_event["recipient"]["id"]  
-					message_text = messaging_event["message"]["text"]  
-					send_message_response(sender_id, parse_user_message(message_text)) 
-
-	return "ok"
-
-
-def send_message(sender_id, message_text):
-	'''
-	Sending response back to the user using facebook graph API
-	'''
-	r = requests.post("https://graph.facebook.com/v2.6/me/messages",
-
-		params={"access_token": PAGE_ACCESS_TOKEN},
-
-		headers={"Content-Type": "application/json"}, 
-
-		data=json.dumps({
-		"recipient": {"id": sender_id},
-		"message": {"text": message_text}
-	}))
-
-def parse_user_message(user_text):
-	'''
-	Send the message to API AI which invokes an intent
-	and sends the response accordingly
-	The bot response is appened with weaher data fetched from
-	open weather map client
-	'''
-	
-	request = ai.text_request()
-	request.query = user_text
-
-	response = json.loads(request.getresponse().read().decode('utf-8'))
-	responseStatus = response['status']['code']
-	if (responseStatus == 200):
-
-		print("API AI response", response['result']['fulfillment']['speech'])
-		try:
-			#Using open weather map client to fetch the weather report
-			weather_report = ''
-
-			input_city = response['result']['parameters']['geo-city']
-			print("City ", input_city)
-
-			owm = pyowm.OWM(OWM_TOKEN)  # You MUST provide a valid API key
-
-			forecast = owm.daily_forecast(input_city)
-
-			observation = owm.weather_at_place(input_city)
-			w = observation.get_weather()
-			print(w)                      
-			print(w.get_wind())                 
-			print(w.get_humidity())      
-			max_temp = str(w.get_temperature('celsius')['temp_max'])  
-			min_temp = str(w.get_temperature('celsius')['temp_min'])
-			current_temp = str(w.get_temperature('celsius')['temp'])
-			wind_speed = str(w.get_wind()['speed'])
-			humidity = str(w.get_humidity())
-
-			weather_report = ' max temp: ' + max_temp + ' min temp: ' + min_temp + ' current temp: ' + current_temp + ' wind speed :' + wind_speed + ' humidity ' + humidity + '%'
-			print("Weather report ", weather_report)
-
-			return (response['result']['fulfillment']['speech'] + weather_report)
-		except:
-			return (response['result']['fulfillment']['speech'])
-
+def messaging_events(payload):
+  """Generate tuples of (sender_id, message_text) from the
+  provided payload.
+  """
+  data = json.loads(payload)
+  messaging_events = data["entry"][0]["messaging"]
+  for event in messaging_events:
+	if "message" in event and "text" in event["message"]:
+	  yield event["sender"]["id"], event["message"]["text"].encode('unicode_escape')
 	else:
-		return ("Sorry, I couldn't understand that question")
-
-def send_message_response(sender_id, message_text):
-
-	sentenceDelimiter = ". "
-	messages = message_text.split(sentenceDelimiter)
-	
-	for message in messages:
-		send_message(sender_id, message)
+	  yield event["sender"]["id"], "I can't echo this"
 
 
+def send_message(token, recipient, text):
+  """Send the message text to recipient with id recipient.
+  """
+
+  r = requests.post("https://graph.facebook.com/v2.6/me/messages",
+	params={"access_token": token},
+	data=json.dumps({
+	  "recipient": {"id": recipient},
+	  "message": {"text": text.decode('unicode_escape')}
+	}),
+	headers={'Content-type': 'application/json'})
+  if r.status_code != requests.codes.ok:
+	print r.text
 
 if __name__ == '__main__':
-	app.run()
+  app.run()
