@@ -93,13 +93,14 @@ def parse_user_message(user_text):
         print("API AI response", response['result']['fulfillment']['speech'])
         try:
             #Using open weather map client to fetch the weather report
+            print ("TESTING")
             weather_report = ''
 
             input_city = response['result']['parameters']['geo-city']
             print("City ", input_city)
 
             owm = pyowm.OWM(OWMKEY)  # You MUST provide a valid API key
-
+            print(owm)
             forecast = owm.daily_forecast(input_city)
 
             observation = owm.weather_at_place(input_city)
