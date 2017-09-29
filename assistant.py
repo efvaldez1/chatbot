@@ -24,7 +24,7 @@ def handle_veriication():
 			Successful when verify_token is same as token sent by FB App
 	'''
 
-	if (request.args.get('hub.verify_token', '') == VERIFY_TOKEN):
+	if (request.args.get('hub.verify_token', '') == 'EAADYWMVfOd4BADEbNHtF3ZAYCX5pHPPV4jxmDkGJDwOZC284mMxnHH67BXZBT4RJnXYIXVFtJGUI0rHDxAomYtkjKbNagIqx01dSx9AI9nDAZCqLmzRhExkWZA8ZCyTGQczZCr0dbIUV6ZAIFZAZCjJuDoWn8PjqI4jt0j29SWyphvCQZDZD'):
 		print("succefully verified")
 		return request.args.get('hub.challenge', '')
 	else:
