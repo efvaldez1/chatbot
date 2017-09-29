@@ -22,18 +22,18 @@ def handle_verification():
   	print ("Verification successful!")
   	return request.args.get('hub.challenge', '')
   else:
-  	print ("Verification failed!")
-  	return ('Error, wrong validation token')
+  	print ("Verification failed broski!")
+  	return 'Error, wrong validation token'
 
 @app.route('/', methods=['POST'])
 def handle_messages():
-  print ("Handling Messages")
+  print ("Handling Messages broski")
   payload = request.get_data()
   print (payload)
   for sender, message in messaging_events(payload):
   	print ("Incoming from %s: %s" % (sender, message))
   	send_message(PAT, sender, message)
-  return ("ok")
+  return "ok"
 
 def messaging_events(payload):
   """Generate tuples of (sender_id, message_text) from the
