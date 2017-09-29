@@ -4,7 +4,6 @@ from flask import Flask, request
 import apiai
 import pyowm
 
-# FB messenger credentials
 
 OWM_TOKEN ="ff66a55cf163cad6cf0db8c7f3d93352"
 ACCESS_TOKEN = "4bdf5dabd288cec7fba4c5ccdb858dc6"
@@ -12,6 +11,7 @@ ACCESS_TOKEN = "4bdf5dabd288cec7fba4c5ccdb858dc6"
 #FB
 #PAGE_ACCESS_TOKEN = 'EAALjV1sGsOMBAOZAW1aiZAgfTakNKVURIA89qBpdnsmWOHL7cHwpUGUtfO78CBexJbnHJWjKaRVIPZBh2TAYxRhaLHkWZBDYT4EESWDiWf0ZAgbOnMRBxqS9Sa0o2F8ZBGJPevmQnWLURKvLQjr44ZAzWTT86fgim4FB8omAubiqQZDZD'
 PAGE_ACCESS_TOKE='EAADYWMVfOd4BAAgUir9ZAxgUCdYnU2F7ehVZAu49pDjVdJZCD1KA8EgZBY4K3p4kXvBsmYVZCxOiG0lFxmf885iOVBtPnVtCxOLanZA5fmOYt3B3F3IpMz2rZBBZBMwQEMu6AJqEjOwPt3rwhrk6V7ZBvB0AvAZCJwtc3WSzGd1JRLqAZDZD'
+
 CLIENT_ACCESS_TOKEN = '70290e7963e543d392a19b33c4e8a90f'
 own = pyowm.OWM(OWM_TOKEN)
 
@@ -25,7 +25,7 @@ def handle_veriication():
 			Successful when verify_token is same as token sent by FB App
 	'''
 
-	if(request.args.get('hub.verify_token','')=VERIFY_TOKEN):
+	if (request.args.get('hub.verify_token', '') == VERIFY_TOKEN):
 		print("succefully verified")
         return request.args.get('hub.challenge', '')
     else:
