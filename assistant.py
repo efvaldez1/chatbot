@@ -13,7 +13,7 @@ app = Flask(__name__)
 
 # This needs to be filled with the Page Access Token that will be provided
 # by the Facebook App that will be created.
-PAT = 'EAAKWmXKgAjABANvmsX8IwICQZChAQiGxpxIqEZChBPTKqyOSgrCDHxIgMXhSZAiPkSO6EXZAHPITUwfzGRG256kVS9GFEPWsQ4aYlqj61zWPy4JqED4MVHkch12OQBTrKTjDbXMB6Twpg0982p5ZCrxJCZCYxLnUmkqe61djKoQwZDZD'
+PAT = 'EAACkXOgsTTEBAE7ZCeuvmE2qkKF381H9aEiR597ZAPoY6FvplwhyvnPgRpR6ZBheoZCq8m9tjTiK8tBEufTBaZCCyVpaQWDAYb9ZAmKaK9vZBzHK9AZC3fDqPjAltoSSf9CDNb6gmZAkrzACbp1CmVai1fK98pFICbeqyjAZAH0yhcMgZDZD'
 
 @app.route('/', methods=['GET'])
 def handle_verification():
@@ -28,7 +28,8 @@ def handle_verification():
 @app.route('/', methods=['POST'])
 def handle_messages():
   print ("Handling Messages")
-  payload = request
+  payload = request.get_data()
+  print type(payload)
   print (payload)
   for sender, message in messaging_events(payload):
   	print ("Incoming from %s: %s" % (sender, message))
