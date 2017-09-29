@@ -23,6 +23,7 @@ CLIENT_ACCESS_TOKEN='70290e7963e543d392a19b33c4e8a90f'
 #API AI
 ai = apiai.ApiAI(CLIENT_ACCESS_TOKEN)
 
+print(ai)
 
 @app.route('/', methods=['GET'])
 def handle_verification():
