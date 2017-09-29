@@ -17,23 +17,23 @@ PAT = ''
 
 @app.route('/', methods=['GET'])
 def handle_verification():
-  print "Handling Verification."
+  print ("Handling Verification.")
   if request.args.get('hub.verify_token', '') == 'abcd123':
-	print "Verification successful!"
-	return request.args.get('hub.challenge', '')
+  	print ("Verification successful!")
+  	return request.args.get('hub.challenge', '')
   else:
-	print "Verification failed!"
-	return 'Error, wrong validation token'
+  	print ("Verification failed!")
+  	return ('Error, wrong validation token')
 
 @app.route('/', methods=['POST'])
 def handle_messages():
-  print "Handling Messages"
+  print ("Handling Messages")
   payload = request.get_data()
-  print payload
+  print (payload)
   for sender, message in messaging_events(payload):
-	print "Incoming from %s: %s" % (sender, message)
-	send_message(PAT, sender, message)
-  return "ok"
+  	print ("Incoming from %s: %s" % (sender, message))
+  	send_message(PAT, sender, message)
+  return ("ok")
 
 def messaging_events(payload):
   """Generate tuples of (sender_id, message_text) from the
@@ -42,10 +42,10 @@ def messaging_events(payload):
   data = json.loads(payload)
   messaging_events = data["entry"][0]["messaging"]
   for event in messaging_events:
-	if "message" in event and "text" in event["message"]:
-	  yield event["sender"]["id"], event["message"]["text"].encode('unicode_escape')
-	else:
-	  yield event["sender"]["id"], "I can't echo this"
+  	if "message" in event and "text" in event["message"]:
+  		yield event["sender"]["id"], event["message"]["text"].encode('unicode_escape')
+  	else:
+  		yield event["sender"]["id"], "I can't echo this"
 
 
 def send_message(token, recipient, text):
@@ -60,7 +60,7 @@ def send_message(token, recipient, text):
 	}),
 	headers={'Content-type': 'application/json'})
   if r.status_code != requests.codes.ok:
-	print r.text
+  	print (r.text)
 
 if __name__ == '__main__':
   app.run()
