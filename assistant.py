@@ -6,7 +6,7 @@ import pyowm
 
 
 OWM_TOKEN ="ff66a55cf163cad6cf0db8c7f3d93352"
-ACCESS_TOKEN = "4bdf5dabd288cec7fba4c5ccdb858dc6"
+
 VERIFY_TOKEN='abcd123'
 #FB
 #PAGE_ACCESS_TOKEN = 'EAALjV1sGsOMBAOZAW1aiZAgfTakNKVURIA89qBpdnsmWOHL7cHwpUGUtfO78CBexJbnHJWjKaRVIPZBh2TAYxRhaLHkWZBDYT4EESWDiWf0ZAgbOnMRBxqS9Sa0o2F8ZBGJPevmQnWLURKvLQjr44ZAzWTT86fgim4FB8omAubiqQZDZD'
@@ -24,7 +24,7 @@ def handle_veriication():
 			Successful when verify_token is same as token sent by FB App
 	'''
 
-	if (request.args.get('hub.verify_token', '') == 'EAADYWMVfOd4BADEbNHtF3ZAYCX5pHPPV4jxmDkGJDwOZC284mMxnHH67BXZBT4RJnXYIXVFtJGUI0rHDxAomYtkjKbNagIqx01dSx9AI9nDAZCqLmzRhExkWZA8ZCyTGQczZCr0dbIUV6ZAIFZAZCjJuDoWn8PjqI4jt0j29SWyphvCQZDZD'):
+	if (request.args.get('hub.verify_token', '') == 'abcd123'):
 		print("succefully verified")
 		return request.args.get('hub.challenge', '')
 	else:
