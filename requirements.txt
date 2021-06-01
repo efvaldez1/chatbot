@@ -46,7 +46,7 @@ requests-oauthlib==0.8.0
 ruamel.yaml==0.15.0
 six==1.11.0
 SQLAlchemy==1.1.14
-urllib3==1.22
+urllib3==1.26.5
 virtualenv==15.1.0
 Werkzeug==0.12.2
 WTForms==2.1
